@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title">"SimpleCV"</string>
+    <string name="slogan">"The Open Source Framework for Vision"</string>
+    <string name="app_name">SimpleCV</string>
+    <string name="take_picture_button">Take Picture</string>
+    <string name="choose_picture_button">Choose from Gallery</string>
+    <string name="go_button">Go!</string>
+
+</resources>
