@@ -1,12 +1,9 @@
 package com.simplecv.hellocamera;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -15,6 +12,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -72,10 +70,15 @@ public class HelloCameraNewApiActivity extends Activity {
     		  MultipartEntity entity = new MultipartEntity();
     		 
     		  entity.addPart("type", new StringBody("file"));
-    		  entity.addPart("file", new FileBody(new File(pathToPicture),"image/jpeg"));
+    		  entity.addPart("data", new FileBody(new File(pathToPicture),"image/jpeg"));
     		  httppost.setEntity(entity);
-    		  HttpResponse response = httpclient.execute(httppost);
-    		  Log.i("success", "response");
+    		  
+    		  HttpResponse httpResponse = httpclient.execute(httppost);
+    		  
+    		  HttpEntity responseEntity = httpResponse.getEntity();
+    		  if(responseEntity!=null) {
+    		      Log.i("Response", EntityUtils.toString(responseEntity));
+    		  }
     		} catch (ClientProtocolException e) {
     			e.printStackTrace();
     		} catch (IOException e) {
