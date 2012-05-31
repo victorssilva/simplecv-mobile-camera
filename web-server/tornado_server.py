@@ -1,27 +1,30 @@
-#import tornado.ioloop
-#import tornado.web
-#
-#class MainHandler(tornado.web.RequestHandler):
-#    def get(self):
-#        self.write("Hello, world")
-#
-#application = tornado.web.Application([
-#    (r"/", MainHandler),
-#])
-#
-#if __name__ == "__main__":
-#    application.listen(8000)
-#    tornado.ioloop.IOLoop.instance().start()
+import os, tempfile
+import tornado.httpserver, tornado.ioloop, tornado.options, tornado.web
+from tornado.options import define, options #test
+from SimpleCV import *
 
-
-import tornado.httpserver, tornado.ioloop, tornado.options, tornado.web, os.path
-from tornado.options import define, options
 
 define("port", default=8000, help="run on the given port", type=int)
+
+def get_edges(image_path):
+    img = Image(image_path)
+    img = img.edges()
+    img.save(image_path)
+    return
+
+def divide(image_path):
+    img = Image(image_path)
+    img = img / 10
+    img.save(image_path)
+    return
+
+transformations_dict = {'edges': get_edges, 'divide': divide}
+
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [ (r"/", HomeHandler), (r"/upload", UploadHandler) ]
+
         tornado.web.Application.__init__(self, handlers)
 
 class HomeHandler(tornado.web.RequestHandler):
@@ -33,18 +36,28 @@ class HomeHandler(tornado.web.RequestHandler):
 class UploadHandler(tornado.web.RequestHandler):
 
     def post(self):
-    
-        file1 = self.request.files['data'][0]
+        tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+        tmp_name = tmp_file.name.split("/")[-1]
+        output_file = open("files/uploads/" + tmp_name, 'w')
 
-# now you can do what you want with the data, we will just save the file to an uploads folder
+        transformation_name = self.request.headers['Transformation']
+        image = self.request.files['data'][0]
+        output_file.write(image['body'])
+        image_path = "%s/files/uploads/%s" % (os.getcwd(), tmp_name)
+       
+        processing_function = transformations_dict[transformation_name]
+        processing_function(image_path)
+        
+        img_URL = "http://10.0.2.2:8000/uploads/%s" % tmp_name
 
-        output_file = open("uploads/" + file1['filename'], 'w')
+        print image_path
+        print img_URL
 
-        output_file.write(file1['body'])
+        self.finish(img_URL)
 
-        self.finish('Your file has been uploaded')
 
 def main():
+
 
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(options.port)

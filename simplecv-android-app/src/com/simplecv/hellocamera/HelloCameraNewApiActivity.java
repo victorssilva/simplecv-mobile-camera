@@ -34,6 +34,8 @@ public class HelloCameraNewApiActivity extends Activity {
 	
 	protected ImageView capturedImage;
 	protected Uri pictureUri;
+	
+	private String transformation = "divide";
 
 	
     /** Called when the activity is first created. */
@@ -64,12 +66,13 @@ public class HelloCameraNewApiActivity extends Activity {
     		HttpClient httpclient = new DefaultHttpClient();
     		HttpPost httppost = new HttpPost(serverURL);
     		httppost.setHeader("User-Agent", "SimpleCV Mobile Camera");
+    		httppost.setHeader("Transformation", transformation);
     		String pathToPicture = pictureUri.getPath();
     		 
     		try {
     		  MultipartEntity entity = new MultipartEntity();
     		 
-    		  entity.addPart("type", new StringBody("file"));
+    		  //entity.addPart("type", new StringBody("file"));
     		  entity.addPart("data", new FileBody(new File(pathToPicture),"image/jpeg"));
     		  httppost.setEntity(entity);
     		  
