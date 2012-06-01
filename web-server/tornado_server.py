@@ -23,7 +23,9 @@ transformations_dict = {'edges': get_edges, 'divide': divide}
 
 class Application(tornado.web.Application):
     def __init__(self):
-        handlers = [ (r"/", HomeHandler), (r"/upload", UploadHandler) ]
+        handlers = [ (r"/", HomeHandler), (r"/upload", UploadHandler),
+                     (r"/uploads/(.*)", tornado.web.StaticFileHandler, 
+                        {"path": os.path.join(os.path.dirname(__file__), "files/uploads")}) ]
 
         tornado.web.Application.__init__(self, handlers)
 

@@ -2,6 +2,9 @@ package com.simplecv.hellocamera;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,11 +19,12 @@ import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -33,9 +37,10 @@ public class HelloCameraNewApiActivity extends Activity {
 	private static String serverURL = "http://10.0.2.2:8000/upload";
 	
 	protected ImageView capturedImage;
+	protected ImageView transformedImage;
 	protected Uri pictureUri;
 	
-	private String transformation = "divide";
+	private String transformation = "edges";
 
 	
     /** Called when the activity is first created. */
@@ -72,7 +77,7 @@ public class HelloCameraNewApiActivity extends Activity {
     		try {
     		  MultipartEntity entity = new MultipartEntity();
     		 
-    		  //entity.addPart("type", new StringBody("file"));
+    		  entity.addPart("type", new StringBody("file"));
     		  entity.addPart("data", new FileBody(new File(pathToPicture),"image/jpeg"));
     		  httppost.setEntity(entity);
     		  
@@ -80,7 +85,15 @@ public class HelloCameraNewApiActivity extends Activity {
     		  
     		  HttpEntity responseEntity = httpResponse.getEntity();
     		  if(responseEntity!=null) {
-    		      Log.i("Response", EntityUtils.toString(responseEntity));
+    			  String transformedImageURL = EntityUtils.toString(responseEntity);
+    		      try {
+    		    	  Bitmap transformedImageBitmap = BitmapFactory.decodeStream((InputStream)new URL(transformedImageURL).getContent());
+    		    	  capturedImage.setImageBitmap(transformedImageBitmap); 
+    		    	} catch (MalformedURLException e) {
+    		    	  e.printStackTrace();
+    		    	} catch (IOException e) {
+    		    	  e.printStackTrace();
+    		    	}
     		  }
     		} catch (ClientProtocolException e) {
     			e.printStackTrace();
