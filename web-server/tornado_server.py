@@ -18,7 +18,20 @@ def divide(image_path):
     img.save(image_path)
     return
 
-transformations_dict = {'edges': get_edges, 'divide': divide}
+def invert(image_path):
+    img = Image(image_path)
+    img = img.invert()
+    img.save(image_path)
+    return
+
+def dilate(image_path):
+    img = Image(image_path)
+    img = img.dilate(5)
+    img.save(image_path)
+    return
+
+transformations_dict = {'edges': get_edges, 'divide': divide,
+                        'invert': invert, 'dilate': dilate }
 
 
 class Application(tornado.web.Application):

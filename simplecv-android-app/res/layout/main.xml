@@ -18,6 +18,12 @@
         android:text="@string/slogan"
         android:textSize="15dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="15dp" />
+
     <Button
         android:id="@+id/take_picture_button"
         android:layout_width="wrap_content"
@@ -34,13 +40,26 @@
         android:onClick="selectPicture"
         android:text="@string/choose_picture_button" />
 
-    <Button
-        android:id="@+id/go_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:onClick="uploadPicture"
-        android:text="@string/go_button" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Spinner
+            android:id="@+id/transformations_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="4" 
+            android:prompt="@string/spinner_prompt" />
+
+        <Button
+            android:id="@+id/go_button"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:onClick="uploadPicture"
+            android:text="@string/go_button" />
+
+    </LinearLayout>
     
     <ImageView
         android:id="@+id/capturedimage"

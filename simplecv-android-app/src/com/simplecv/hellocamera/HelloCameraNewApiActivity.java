@@ -30,7 +30,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 public class HelloCameraNewApiActivity extends Activity {
 	
@@ -45,7 +49,13 @@ public class HelloCameraNewApiActivity extends Activity {
 	protected Uri pictureUri;
 	protected String pathToPicture;
 	
-	private String transformation = "edges";
+	private String transformation = null;
+	
+	/* Possible transformations on spinner */
+	private static final int INVERT = 0;
+	private static final int GRAB_EDGES = 1;
+	private static final int DIVIDE = 2;
+	private static final int DILATE = 3;
 
 	
     /** Called when the activity is first created. */
@@ -54,6 +64,13 @@ public class HelloCameraNewApiActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         capturedImage = (ImageView) findViewById(R.id.capturedimage);
+        
+        Spinner spinner = (Spinner) findViewById(R.id.transformations_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.transformations_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new onTransformationSelectedListener());
     }
    
     public Uri getNewPictureFileUri(){
@@ -93,7 +110,7 @@ public class HelloCameraNewApiActivity extends Activity {
     }
     
     public void uploadPicture(View view) {
-    	if (pictureIsSet) {
+    	if (pictureIsSet == true && transformation != null) {
     		HttpClient httpclient = new DefaultHttpClient();
     		HttpPost httppost = new HttpPost(serverURL);
     		httppost.setHeader("User-Agent", "SimpleCV Mobile Camera");
@@ -148,4 +165,30 @@ public class HelloCameraNewApiActivity extends Activity {
 			}	
 		}
 	}
+	
+	public class onTransformationSelectedListener implements OnItemSelectedListener {
+
+	    public void onItemSelected(AdapterView<?> parent,
+	        View view, int pos, long id) {
+	    	switch (pos){
+	    		case INVERT:
+	    			transformation = "invert";
+	    		break;
+	    		case GRAB_EDGES:
+	    			transformation = "edges";	    		
+	    		break;
+	    		case DIVIDE:
+	    			transformation = "divide";
+	    		break;
+	    		case DILATE:
+	    			transformation = "dilate";
+	    		break;
+	    	}
+	    }
+
+	    public void onNothingSelected(AdapterView<?> parent) {
+	      // Do nothing.
+	    }
+	}
+	
 }

@@ -7,5 +7,12 @@
     <string name="take_picture_button">Take Picture</string>
     <string name="choose_picture_button">Choose from Gallery</string>
     <string name="go_button">Go!</string>
+    <string name="spinner_prompt">Select a transformation...</string>
+    <string-array name="transformations_array">
+        <item>Invert</item>
+        <item>Grab Edges</item>
+        <item>Divide</item>
+		<item>Dilate</item>
+    </string-array>
 
 </resources>
