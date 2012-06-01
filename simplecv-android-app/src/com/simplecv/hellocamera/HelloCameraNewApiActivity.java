@@ -21,6 +21,7 @@ import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -42,6 +43,7 @@ public class HelloCameraNewApiActivity extends Activity {
 	protected ImageView capturedImage;
 	protected ImageView transformedImage;
 	protected Uri pictureUri;
+	protected String pathToPicture;
 	
 	private String transformation = "edges";
 
@@ -83,13 +85,20 @@ public class HelloCameraNewApiActivity extends Activity {
     }
     
     
+    public String getPathFromGallery(Uri uri) {
+    	Cursor cursor = getContentResolver().query(uri, null, null, null, null); 
+        cursor.moveToFirst(); 
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA); 
+        return cursor.getString(idx); 
+    }
+    
     public void uploadPicture(View view) {
     	if (pictureIsSet) {
     		HttpClient httpclient = new DefaultHttpClient();
     		HttpPost httppost = new HttpPost(serverURL);
     		httppost.setHeader("User-Agent", "SimpleCV Mobile Camera");
     		httppost.setHeader("Transformation", transformation);
-    		String pathToPicture = pictureUri.getPath();
+    		
     		 
     		try {
     		  MultipartEntity entity = new MultipartEntity();
@@ -126,13 +135,14 @@ public class HelloCameraNewApiActivity extends Activity {
 		{
 			switch (requestCode){
 				case TAKE_PICTURE:
+					pathToPicture = pictureUri.getPath();
 					capturedImage.setImageURI(pictureUri);
 					pictureIsSet = true;
 					break;
 				case SELECT_PICTURE:
 					pictureUri = data.getData();
+					pathToPicture = getPathFromGallery(pictureUri);
 					capturedImage.setImageURI(pictureUri);
-					setContentView(R.layout.main);
 					pictureIsSet = true;
 					break;
 			}	
