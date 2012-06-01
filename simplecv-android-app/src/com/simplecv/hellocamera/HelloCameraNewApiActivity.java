@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -51,10 +54,24 @@ public class HelloCameraNewApiActivity extends Activity {
         capturedImage = (ImageView) findViewById(R.id.capturedimage);
     }
    
-    public void takePicture(View view){
-    	File file = new File(Environment.getExternalStorageDirectory(), "SimpleCV.jpg");
+    public Uri getNewPictureFileUri(){
+		File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SimpleCV");
+		if (!mediaStorageDir.exists()){
+			if (!mediaStorageDir.mkdirs()){
+				Log.i("!", "Failed to create directory");
+		    	mediaStorageDir = Environment.getExternalStorageDirectory();
+	        }
+	    }
+		
+        String timeStamp = new SimpleDateFormat("MMdd_HHmmss").format(new Date());
+        File file = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");		
+    	return Uri.fromFile(file);
+    }
+    
+	public void takePicture(View view){
+
     	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    	pictureUri = Uri.fromFile(file);
+    	pictureUri = getNewPictureFileUri();
     	intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
     	startActivityForResult(intent, TAKE_PICTURE);
     }
