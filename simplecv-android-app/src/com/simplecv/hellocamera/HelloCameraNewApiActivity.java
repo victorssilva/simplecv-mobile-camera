@@ -1,6 +1,7 @@
 package com.simplecv.hellocamera;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -80,7 +81,7 @@ public class HelloCameraNewApiActivity extends Activity {
         spinner.setOnItemSelectedListener(new onTransformationSelectedListener());
     }
    
-    public Uri getNewPictureFileUri(){
+    public File getNewPictureFile(){
 		File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SimpleCV");
 		if (!mediaStorageDir.exists()){
 			if (!mediaStorageDir.mkdirs()){
@@ -91,13 +92,28 @@ public class HelloCameraNewApiActivity extends Activity {
 		
         String timeStamp = new SimpleDateFormat("MMdd_HHmmss").format(new Date());
         File file = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");		
-    	return Uri.fromFile(file);
+    	return file;
     }
     
+    public Uri getUriFromBitmap(Bitmap bitmap) {
+		File newPictureFile = getNewPictureFile();
+		try {
+	        FileOutputStream outStream = new FileOutputStream(newPictureFile);
+	        bitmap.compress(Bitmap.CompressFormat.JPEG,100, outStream);
+	        outStream.flush();
+	        outStream.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+        return Uri.fromFile(newPictureFile);
+    }
+   
+   
 	public void takePicture(View view){
 
     	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    	pictureUri = getNewPictureFileUri();
+    	pictureUri = Uri.fromFile(getNewPictureFile());
     	intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
     	startActivityForResult(intent, TAKE_PICTURE);
     }
@@ -168,7 +184,12 @@ public class HelloCameraNewApiActivity extends Activity {
 				String transformedImageURL = EntityUtils.toString(responseEntity);
 				try {
 					Bitmap transformedImageBitmap = BitmapFactory.decodeStream((InputStream)new URL(transformedImageURL).getContent());
-					capturedImage.setImageBitmap(transformedImageBitmap); 
+					//capturedImage.setImageBitmap(transformedImageBitmap); 
+					Uri transformedImageUri = getUriFromBitmap(transformedImageBitmap);
+					Intent displayIntent = new Intent(getApplicationContext(), DisplayResultsActivity.class);
+					displayIntent.putExtra("uriAsString", transformedImageUri.toString());
+					startActivity(displayIntent);
+					//capturedImage.setImageURI(transformedImageUri); 
 		    	} catch (MalformedURLException e) {
 		    	  e.printStackTrace();
 		    	} catch (IOException e) {
@@ -181,7 +202,8 @@ public class HelloCameraNewApiActivity extends Activity {
 			e.printStackTrace();
 		}
   }
-
+    
+    
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK)
 		{
