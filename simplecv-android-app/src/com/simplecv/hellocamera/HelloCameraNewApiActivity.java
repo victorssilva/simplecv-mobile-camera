@@ -6,17 +6,22 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
@@ -42,7 +47,8 @@ public class HelloCameraNewApiActivity extends Activity {
 	private static final int SELECT_PICTURE = 1;
 	private boolean pictureIsSet = false;
 	
-	private static String serverURL = "http://10.0.2.2:8000/upload";
+	private static String uploadURL = "http://10.0.2.2:8000/upload";
+	private static String modifyURL = "http://10.0.2.2:8000/process";
 	
 	protected ImageView capturedImage;
 	protected ImageView transformedImage;
@@ -50,6 +56,7 @@ public class HelloCameraNewApiActivity extends Activity {
 	protected String pathToPicture;
 	
 	private String transformation = null;
+	private String linkToOriginal = null;
 	
 	/* Possible transformations on spinner */
 	private static final int INVERT = 0;
@@ -109,43 +116,71 @@ public class HelloCameraNewApiActivity extends Activity {
         return cursor.getString(idx); 
     }
     
-    public void uploadPicture(View view) {
+    public void processPicture(View view) {
     	if (pictureIsSet == true && transformation != null) {
-    		HttpClient httpclient = new DefaultHttpClient();
-    		HttpPost httppost = new HttpPost(serverURL);
-    		httppost.setHeader("User-Agent", "SimpleCV Mobile Camera");
-    		httppost.setHeader("Transformation", transformation);
-    		
-    		 
-    		try {
-    		  MultipartEntity entity = new MultipartEntity();
-    		 
-    		  entity.addPart("type", new StringBody("file"));
-    		  entity.addPart("data", new FileBody(new File(pathToPicture),"image/jpeg"));
-    		  httppost.setEntity(entity);
-    		  
-    		  HttpResponse httpResponse = httpclient.execute(httppost);
-    		  
-    		  HttpEntity responseEntity = httpResponse.getEntity();
-    		  if(responseEntity!=null) {
-    			  String transformedImageURL = EntityUtils.toString(responseEntity);
-    		      try {
-    		    	  Bitmap transformedImageBitmap = BitmapFactory.decodeStream((InputStream)new URL(transformedImageURL).getContent());
-    		    	  capturedImage.setImageBitmap(transformedImageBitmap); 
-    		    	} catch (MalformedURLException e) {
-    		    	  e.printStackTrace();
-    		    	} catch (IOException e) {
-    		    	  e.printStackTrace();
-    		    	}
-    		  }
-    		} catch (ClientProtocolException e) {
-    			e.printStackTrace();
-    		} catch (IOException e) {
-    			e.printStackTrace();
+    		if (linkToOriginal == null) {
+    			uploadPicture(view);
     		}
+    		
+			modifyPicture(view);
     	}
     }
     
+    public void uploadPicture(View view) {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(uploadURL);
+		httpPost.setHeader("User-Agent", "SimpleCV Mobile Camera");
+		
+		try {
+			MultipartEntity entity = new MultipartEntity();
+		 
+			entity.addPart("type", new StringBody("file"));
+			entity.addPart("data", new FileBody(new File(pathToPicture),"image/jpeg"));
+			httpPost.setEntity(entity);
+		  
+			HttpResponse httpResponse = httpclient.execute(httpPost);
+		  
+			HttpEntity responseEntity = httpResponse.getEntity(); 
+			if(responseEntity!=null) {
+				linkToOriginal = EntityUtils.toString(responseEntity);
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void modifyPicture(View view) {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(modifyURL);
+		httpPost.setHeader("User-Agent", "SimpleCV Mobile Camera");
+		
+		try { 
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+	        nameValuePairs.add(new BasicNameValuePair("picture", linkToOriginal));
+	        nameValuePairs.add(new BasicNameValuePair("transformation", transformation));
+	        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			HttpResponse httpResponse = httpclient.execute(httpPost);
+		  
+			HttpEntity responseEntity = httpResponse.getEntity(); 
+			if(responseEntity!=null) {
+				String transformedImageURL = EntityUtils.toString(responseEntity);
+				try {
+					Bitmap transformedImageBitmap = BitmapFactory.decodeStream((InputStream)new URL(transformedImageURL).getContent());
+					capturedImage.setImageBitmap(transformedImageBitmap); 
+		    	} catch (MalformedURLException e) {
+		    	  e.printStackTrace();
+		    	} catch (IOException e) {
+		    	  e.printStackTrace();
+		    	}
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+  }
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK)
@@ -153,16 +188,15 @@ public class HelloCameraNewApiActivity extends Activity {
 			switch (requestCode){
 				case TAKE_PICTURE:
 					pathToPicture = pictureUri.getPath();
-					capturedImage.setImageURI(pictureUri);
-					pictureIsSet = true;
 					break;
 				case SELECT_PICTURE:
 					pictureUri = data.getData();
 					pathToPicture = getPathFromGallery(pictureUri);
-					capturedImage.setImageURI(pictureUri);
-					pictureIsSet = true;
 					break;
 			}	
+			capturedImage.setImageURI(pictureUri);
+			pictureIsSet = true;
+			linkToOriginal = null;
 		}
 	}
 	
@@ -187,7 +221,7 @@ public class HelloCameraNewApiActivity extends Activity {
 	    }
 
 	    public void onNothingSelected(AdapterView<?> parent) {
-	      // Do nothing.
+	    	
 	    }
 	}
 	
