@@ -6,6 +6,8 @@
     <string name="app_name">SimpleCV</string>
     <string name="take_picture_button">Take Picture</string>
     <string name="choose_picture_button">Choose from Gallery</string>
+    <string name="share_button">Share!</string>
+    <string name="delete_button">Delete</string>
     <string name="go_button">Go!</string>
     <string name="spinner_prompt">Select a transformation...</string>
     <string-array name="transformations_array">

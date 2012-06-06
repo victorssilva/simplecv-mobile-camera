@@ -184,12 +184,10 @@ public class HelloCameraNewApiActivity extends Activity {
 				String transformedImageURL = EntityUtils.toString(responseEntity);
 				try {
 					Bitmap transformedImageBitmap = BitmapFactory.decodeStream((InputStream)new URL(transformedImageURL).getContent());
-					//capturedImage.setImageBitmap(transformedImageBitmap); 
 					Uri transformedImageUri = getUriFromBitmap(transformedImageBitmap);
 					Intent displayIntent = new Intent(getApplicationContext(), DisplayResultsActivity.class);
 					displayIntent.putExtra("uriAsString", transformedImageUri.toString());
 					startActivity(displayIntent);
-					//capturedImage.setImageURI(transformedImageUri); 
 		    	} catch (MalformedURLException e) {
 		    	  e.printStackTrace();
 		    	} catch (IOException e) {

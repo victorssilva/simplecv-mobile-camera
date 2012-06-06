@@ -24,6 +24,28 @@
         android:layout_gravity="center_horizontal"
         android:textSize="15dp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" >
+
+   		<Button
+	        android:id="@+id/share_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:onClick="deletePicture"
+	        android:text="@string/delete_button" />
+
+   		<Button
+	        android:id="@+id/share_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:onClick="sharePicture"
+	        android:text="@string/share_button" />
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/modifiedimage"
         android:layout_width="fill_parent"
