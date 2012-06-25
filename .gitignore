@@ -1,6 +1,7 @@
 # Compiled source #
 *.com
 *.class
+*.apk
 *.dex
 *.dll
 *.exe

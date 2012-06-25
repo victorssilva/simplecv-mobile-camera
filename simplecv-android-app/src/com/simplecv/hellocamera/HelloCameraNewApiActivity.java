@@ -51,8 +51,10 @@ public class HelloCameraNewApiActivity extends Activity {
 	private static final int SELECT_PICTURE = 1;
 	private boolean pictureIsSet = false;
 
-	private static String uploadURL = "http://10.0.2.2:8000/upload";
-	private static String modifyURL = "http://10.0.2.2:8000/process";
+	//private static String uploadURL = "http://10.0.2.2:8000/upload";
+	//private static String modifyURL = "http://10.0.2.2:8000/process";
+	private static String uploadURL = "http://mobiletest.simplecv.org:8000/upload";
+	private static String modifyURL = "http://mobiletest.simplecv.org:8000/process";
 
 	private ImageView capturedImage;
 	private Uri pictureUri;

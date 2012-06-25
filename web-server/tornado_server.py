@@ -79,7 +79,6 @@ class ProcessHandler(tornado.web.RequestHandler):
         modified_path = "files/uploads/modified/" + file_name
 
         shutil.copyfile(original_path, modified_path);
-        #output_file = open(modified_path, 'w')
 
         processing_function = transformations_dict[transformation_name]
         processing_function(modified_path)
