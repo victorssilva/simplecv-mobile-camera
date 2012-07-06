@@ -1,6 +1,7 @@
 package com.simplecv.hellocamera;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -86,10 +88,10 @@ public class HelloCameraNewApiActivity extends Activity {
     }
 
     public File getNewPictureFile(){
-		File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SimpleCV");
+		File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SimpleCV"); //WHERETO? Context.DIRECTORY_PICTURES?
 		if (!mediaStorageDir.exists()){
 			if (!mediaStorageDir.mkdirs()){
-				Log.i("!", "Failed to create directory");
+				Log.i("SimpleCV", "Failed to create directory");
 		    	mediaStorageDir = Environment.getExternalStorageDirectory();
 	        }
 	    }
@@ -112,7 +114,47 @@ public class HelloCameraNewApiActivity extends Activity {
 		}
         return Uri.fromFile(newPictureFile);
     }
+    
+    public Bitmap decodeFile(File f){
+        Bitmap b = null;
+        try {
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
 
+            FileInputStream fis = new FileInputStream(f);
+            BitmapFactory.decodeStream(fis, null, o);
+            fis.close();
+
+            int scale = 1;
+            if (o.outHeight > 300 || o.outWidth > 300) { //Max size = ?
+                scale = (int)Math.pow(2, (int) Math.round(Math.log(300 / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+            }
+
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            fis = new FileInputStream(f);
+            b = BitmapFactory.decodeStream(fis, null, o2);
+            fis.close();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+        return b;
+    }
+    
+	 public Bitmap rotate(Bitmap original){
+		 
+		 Matrix matrix = new Matrix();
+		 matrix.postRotate(90);
+		 Bitmap rotated = Bitmap.createBitmap(original, 0, 0, 
+		                               original.getWidth(), original.getHeight(), 
+		                               matrix, true);
+		 return rotated;
+	 }
+    
+    public void displayPicture(){
+    	Bitmap pictureBitmap = decodeFile(new File(pathToPicture));
+    	capturedImage.setImageBitmap(pictureBitmap);
+    }
 
 	public void takePicture(View view){
 
@@ -260,7 +302,8 @@ public class HelloCameraNewApiActivity extends Activity {
 					pathToPicture = getPathFromGallery(pictureUri);
 					break;
 			}
-			capturedImage.setImageURI(pictureUri);
+			displayPicture();
+			//capturedImage.setImageURI(pictureUri);
 			pictureIsSet = true;
 			linkToOriginal = null;
 		}

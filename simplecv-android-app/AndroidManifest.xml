@@ -16,7 +16,8 @@
         android:label="@string/app_name" >
         <activity
             android:name=".HelloCameraNewApiActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplayResultsActivity" >
+            android:name=".DisplayResultsActivity"
+            android:screenOrientation="portrait" >
 		</activity>
     </application>
 
