@@ -61,7 +61,8 @@ class UploadHandler(tornado.web.RequestHandler):
         image_path = "%s/files/uploads/original/%s" % (os.getcwd(), tmp_name)
 
 
-        img_URL = "http://10.0.2.2:8000/uploads/original/%s" % tmp_name
+        #img_URL = "http://10.0.2.2:8000/uploads/original/%s" % tmp_name
+        img_URL = "http://mobiletest.simplecv.org:8000/uploads/original/%s" % tmp_name
 
         print image_path
         print img_URL
@@ -83,7 +84,8 @@ class ProcessHandler(tornado.web.RequestHandler):
         processing_function = transformations_dict[transformation_name]
         processing_function(modified_path)
 
-        img_URL = "http://10.0.2.2:8000/uploads/modified/%s" % file_name
+        #img_URL = "http://10.0.2.2:8000/uploads/modified/%s" % file_name
+        img_URL = "http://mobiletest.simplecv.org:8000/uploads/modified/%s" % file_name
 
         print modified_path
         print img_URL
