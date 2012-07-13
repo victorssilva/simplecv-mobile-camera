@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ public class DisplayResultsActivity extends Activity {
 	
 	protected ImageView modifiedImage;
 	protected Uri modifiedImageUri;
+    protected Bitmap modifiedImageBitmap;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,6 @@ public class DisplayResultsActivity extends Activity {
         modifiedImageUri = Uri.parse(uriAsString);
         modifiedImage = (ImageView) findViewById(R.id.modifiedimage);
 		new displayImageTask().execute(modifiedImageUri);
-        //modifiedImage.setImageURI(modifiedImageUri);
     }
    
     public void deletePicture(View view){
@@ -48,7 +47,7 @@ public class DisplayResultsActivity extends Activity {
    
 	 private class displayImageTask extends AsyncTask<Uri, Void, Void> {
 		 	
-		 	Bitmap pictureBitmap = null;
+		 	Bitmap bitmapToDisplay = null;
 		 
 			public Bitmap decodeFile(File f){
 			    Bitmap b = null;
@@ -77,24 +76,13 @@ public class DisplayResultsActivity extends Activity {
 			}
 	    	
 	        protected Void doInBackground(Uri... pictureUri) {
-	          	pictureBitmap = rotate(decodeFile(new File(pictureUri[0].getPath())));
+	          	bitmapToDisplay = decodeFile(new File(pictureUri[0].getPath()));
 				return (null);
 	        }
 	        
 	        protected void onPostExecute(Void unused) {
-	        	modifiedImage.setImageBitmap(pictureBitmap);
+	        	modifiedImageBitmap = bitmapToDisplay;
+		    	modifiedImage.setImageBitmap(modifiedImageBitmap);
 	        }
 	    }
-    
-	 public Bitmap rotate(Bitmap original){
-		 
-		 Matrix matrix = new Matrix();
-		 matrix.postRotate(90);
-		 Bitmap rotated = Bitmap.createBitmap(original, 0, 0, 
-		                               original.getWidth(), original.getHeight(), 
-		                               matrix, true);
-		 return rotated;
-	 }
-    
-    
 }

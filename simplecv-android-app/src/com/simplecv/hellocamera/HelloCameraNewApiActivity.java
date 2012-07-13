@@ -60,6 +60,7 @@ public class HelloCameraNewApiActivity extends Activity {
 
 	private ImageView capturedImage;
 	private Uri pictureUri;
+	private Bitmap pictureBitmap;
 	private String pathToPicture;
 
 	private String transformation = null;
@@ -141,18 +142,9 @@ public class HelloCameraNewApiActivity extends Activity {
         return b;
     }
     
-	 public Bitmap rotate(Bitmap original){
-		 
-		 Matrix matrix = new Matrix();
-		 matrix.postRotate(90);
-		 Bitmap rotated = Bitmap.createBitmap(original, 0, 0, 
-		                               original.getWidth(), original.getHeight(), 
-		                               matrix, true);
-		 return rotated;
-	 }
-    
     public void displayPicture(){
-    	Bitmap pictureBitmap = decodeFile(new File(pathToPicture));
+    	pictureBitmap = decodeFile(new File(pathToPicture));
+    	forcePortrait();
     	capturedImage.setImageBitmap(pictureBitmap);
     }
 
@@ -273,8 +265,6 @@ public class HelloCameraNewApiActivity extends Activity {
 					Uri transformedImageUri = getUriFromBitmap(transformedImageBitmap);
 					Intent displayIntent = new Intent(getApplicationContext(), DisplayResultsActivity.class);
 					displayIntent.putExtra("uriAsString", transformedImageUri.toString());
-					
-					
 					startActivity(displayIntent);
 		    	} catch (MalformedURLException e) {
 		    	  e.printStackTrace();
@@ -303,7 +293,6 @@ public class HelloCameraNewApiActivity extends Activity {
 					break;
 			}
 			displayPicture();
-			//capturedImage.setImageURI(pictureUri);
 			pictureIsSet = true;
 			linkToOriginal = null;
 		}
@@ -333,5 +322,16 @@ public class HelloCameraNewApiActivity extends Activity {
 
 	    }
 	}
+	
+	 public void forcePortrait(){
+
+		 if (pictureBitmap.getWidth() > pictureBitmap.getHeight()) {
+			 Matrix matrix = new Matrix();
+		     matrix.preRotate(90);
+			 pictureBitmap = Bitmap.createBitmap(pictureBitmap, 0, 0, 
+			                               pictureBitmap.getWidth(), pictureBitmap.getHeight(), 
+			                               matrix, true);
+		 }
+	 }
 
 }

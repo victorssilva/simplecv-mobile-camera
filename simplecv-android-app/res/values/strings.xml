@@ -9,6 +9,7 @@
     <string name="share_button">Share!</string>
     <string name="delete_button">Delete</string>
     <string name="go_button">Go!</string>
+    <string name="rotate_button">Rotate</string>
     <string name="spinner_prompt">Select a transformation...</string>
     <string-array name="transformations_array">
         <item>Invert</item>

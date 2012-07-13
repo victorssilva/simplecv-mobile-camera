@@ -33,6 +33,11 @@ def dilate(image_path):
 transformations_dict = {'edges': get_edges, 'divide': divide,
                         'invert': invert, 'dilate': dilate }
 
+def force_portrait(image_path):
+    img = Image(image_path)
+    img = img.rotate(-90, fixed=False)
+    img.save(image_path)
+    return
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -65,7 +70,6 @@ class UploadHandler(tornado.web.RequestHandler):
         img_URL = "http://mobiletest.simplecv.org:8000/uploads/original/%s" % tmp_name
 
         print image_path
-        print img_URL
 
         self.finish(img_URL)
 
@@ -81,6 +85,7 @@ class ProcessHandler(tornado.web.RequestHandler):
 
         shutil.copyfile(original_path, modified_path);
 
+        force_portrait(modified_path)
         processing_function = transformations_dict[transformation_name]
         processing_function(modified_path)
 

@@ -34,9 +34,10 @@ public final class R {
         public static final int choose_picture_button=0x7f040004;
         public static final int delete_button=0x7f040006;
         public static final int go_button=0x7f040007;
+        public static final int rotate_button=0x7f040008;
         public static final int share_button=0x7f040005;
         public static final int slogan=0x7f040001;
-        public static final int spinner_prompt=0x7f040008;
+        public static final int spinner_prompt=0x7f040009;
         public static final int take_picture_button=0x7f040003;
         public static final int title=0x7f040000;
     }
