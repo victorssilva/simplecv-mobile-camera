@@ -65,6 +65,7 @@ public class HelloCameraNewApiActivity extends Activity {
 
 	private String transformation = null;
 	private String linkToOriginal = null;
+	private int rotation;
 
 	/* Possible transformations on spinner */
 	private static final int INVERT = 0;
@@ -142,10 +143,14 @@ public class HelloCameraNewApiActivity extends Activity {
         return b;
     }
     
+    public void refreshImage() {
+    	capturedImage.setImageBitmap(pictureBitmap);
+    }
+    
     public void displayPicture(){
     	pictureBitmap = decodeFile(new File(pathToPicture));
     	forcePortrait();
-    	capturedImage.setImageBitmap(pictureBitmap);
+    	if (rotation == 0) refreshImage();
     }
 
 	public void takePicture(View view){
@@ -253,6 +258,7 @@ public class HelloCameraNewApiActivity extends Activity {
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 	        nameValuePairs.add(new BasicNameValuePair("picture", linkToOriginal));
 	        nameValuePairs.add(new BasicNameValuePair("transformation", transformation));
+	        nameValuePairs.add(new BasicNameValuePair("rotation", Integer.toString(rotation)));
 	        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 			HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -292,6 +298,7 @@ public class HelloCameraNewApiActivity extends Activity {
 					pathToPicture = getPathFromGallery(pictureUri);
 					break;
 			}
+			rotation = 0;
 			displayPicture();
 			pictureIsSet = true;
 			linkToOriginal = null;
@@ -324,14 +331,28 @@ public class HelloCameraNewApiActivity extends Activity {
 	}
 	
 	 public void forcePortrait(){
-
 		 if (pictureBitmap.getWidth() > pictureBitmap.getHeight()) {
-			 Matrix matrix = new Matrix();
-		     matrix.preRotate(90);
-			 pictureBitmap = Bitmap.createBitmap(pictureBitmap, 0, 0, 
-			                               pictureBitmap.getWidth(), pictureBitmap.getHeight(), 
-			                               matrix, true);
+			 rotate(90);
 		 }
 	 }
+	 
+	 public void rotate(int angle){
+		 Matrix matrix = new Matrix();
+		 rotation += angle;
+	     matrix.preRotate(angle);
+		 pictureBitmap = Bitmap.createBitmap(pictureBitmap, 0, 0, 
+		                               pictureBitmap.getWidth(), pictureBitmap.getHeight(), 
+		                               matrix, true);
+		 
+		 linkToOriginal = null;
+		 refreshImage();
+	 }
 
+	 public void rotateCw(View view){
+		 rotate(90);
+	 }
+	 
+	 public void rotateCcw(View view){
+		 rotate(-90);
+	 }
 }

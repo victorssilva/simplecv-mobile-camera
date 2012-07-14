@@ -33,9 +33,9 @@ def dilate(image_path):
 transformations_dict = {'edges': get_edges, 'divide': divide,
                         'invert': invert, 'dilate': dilate }
 
-def force_portrait(image_path):
+def fix_rotation(image_path, rotation):
     img = Image(image_path)
-    img = img.rotate(-90, fixed=False)
+    img = img.rotate(-rotation, fixed=False)
     img.save(image_path)
     return
 
@@ -78,6 +78,7 @@ class ProcessHandler(tornado.web.RequestHandler):
     def post(self):
         given_path = self.request.arguments['picture'][0]
         transformation_name = self.request.arguments['transformation'][0]
+        rotation = int(self.request.arguments['rotation'][0])
 
         file_name = given_path.split('/')[-1]
         original_path = "files/uploads/original/" + file_name
@@ -85,7 +86,7 @@ class ProcessHandler(tornado.web.RequestHandler):
 
         shutil.copyfile(original_path, modified_path);
 
-        force_portrait(modified_path)
+        fix_rotation(modified_path, rotation)
         processing_function = transformations_dict[transformation_name]
         processing_function(modified_path)
 

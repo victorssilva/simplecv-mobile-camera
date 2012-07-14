@@ -17,10 +17,12 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int capturedimage=0x7f060006;
+        public static final int capturedimage=0x7f060008;
         public static final int choose_picture_button=0x7f060003;
         public static final int go_button=0x7f060005;
         public static final int modifiedimage=0x7f060001;
+        public static final int rotateccw_button=0x7f060007;
+        public static final int rotatecw_button=0x7f060006;
         public static final int share_button=0x7f060000;
         public static final int take_picture_button=0x7f060002;
         public static final int transformations_spinner=0x7f060004;
@@ -32,12 +34,13 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f040002;
         public static final int choose_picture_button=0x7f040004;
+        public static final int clockwise_button=0x7f040008;
+        public static final int counterclockwise_button=0x7f040009;
         public static final int delete_button=0x7f040006;
         public static final int go_button=0x7f040007;
-        public static final int rotate_button=0x7f040008;
         public static final int share_button=0x7f040005;
         public static final int slogan=0x7f040001;
-        public static final int spinner_prompt=0x7f040009;
+        public static final int spinner_prompt=0x7f04000a;
         public static final int take_picture_button=0x7f040003;
         public static final int title=0x7f040000;
     }

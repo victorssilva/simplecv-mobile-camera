@@ -40,7 +40,7 @@ public class DisplayResultsActivity extends Activity {
     
     public void sharePicture(View view){
     	Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-    	sharingIntent.setType("image/png"); //png?
+    	sharingIntent.setType("image/jpg");
     	sharingIntent.putExtra(Intent.EXTRA_STREAM, modifiedImageUri);
     	startActivity(Intent.createChooser(sharingIntent, "Share using"));
     }
