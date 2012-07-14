@@ -65,6 +65,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="2"
             android:onClick="processPicture"
+            android:clickable="false"
             android:text="@string/go_button" />
     </LinearLayout>
 
@@ -74,20 +75,22 @@
         android:baselineAligned="true" >
 
         <Button
-            android:id="@+id/rotatecw_button"
+            android:id="@+id/clockwise_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="rotateCw"
+            android:clickable="false"
             android:text="@string/clockwise_button" />
 
         <Button
-            android:id="@+id/rotateccw_button"
+            android:id="@+id/counterclockwise_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:onClick="rotateCcw"
+            android:clickable="false"
             android:text="@string/counterclockwise_button" />
     </LinearLayout>
 

@@ -34,6 +34,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,8 +46,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class HelloCameraNewApiActivity extends Activity {
 
@@ -62,6 +66,9 @@ public class HelloCameraNewApiActivity extends Activity {
 	private Uri pictureUri;
 	private Bitmap pictureBitmap;
 	private String pathToPicture;
+	private Button goButton;
+	private Button clockwiseButton;
+	private Button counterclockwiseButton;
 
 	private String transformation = null;
 	private String linkToOriginal = null;
@@ -80,6 +87,9 @@ public class HelloCameraNewApiActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         capturedImage = (ImageView) findViewById(R.id.capturedimage);
+        goButton = (Button) findViewById(R.id.go_button);
+        counterclockwiseButton = (Button) findViewById(R.id.counterclockwise_button);
+        clockwiseButton = (Button) findViewById(R.id.clockwise_button);
 
         Spinner spinner = (Spinner) findViewById(R.id.transformations_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -175,10 +185,22 @@ public class HelloCameraNewApiActivity extends Activity {
         return cursor.getString(idx);
     }
     
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+    
     public void processPicture(View view) {
-		if (pictureIsSet == true && transformation != null) {
-			new UploadImageTask(this).execute();
-		}	
+    	if (isNetworkAvailable()) {
+    		if (pictureIsSet) {
+			  		new UploadImageTask(this).execute();
+    		}
+    	} else {
+    		Toast.makeText(getApplicationContext(), 
+                    "No internet connection!", Toast.LENGTH_LONG).show();	
+    	}
     }
     
     private class UploadImageTask extends AsyncTask<Void, String, Void> {
@@ -301,6 +323,9 @@ public class HelloCameraNewApiActivity extends Activity {
 			rotation = 0;
 			displayPicture();
 			pictureIsSet = true;
+			goButton.setClickable(true);
+			counterclockwiseButton.setClickable(true);
+			clockwiseButton.setClickable(true);
 			linkToOriginal = null;
 		}
 	}

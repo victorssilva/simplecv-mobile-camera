@@ -19,10 +19,10 @@ public final class R {
     public static final class id {
         public static final int capturedimage=0x7f060008;
         public static final int choose_picture_button=0x7f060003;
+        public static final int clockwise_button=0x7f060006;
+        public static final int counterclockwise_button=0x7f060007;
         public static final int go_button=0x7f060005;
         public static final int modifiedimage=0x7f060001;
-        public static final int rotateccw_button=0x7f060007;
-        public static final int rotatecw_button=0x7f060006;
         public static final int share_button=0x7f060000;
         public static final int take_picture_button=0x7f060002;
         public static final int transformations_spinner=0x7f060004;
