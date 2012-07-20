@@ -30,8 +30,26 @@ def dilate(image_path):
     img.save(image_path)
     return
 
+def eight_bit(image_path):
+    img = Image(image_path)
+    bigger = img.width if img.width > img.height else img.height
+    
+    if bigger < 400:
+        pixel_size = 5
+    elif bigger < 800:
+        pixel_size = 8
+    elif bigger < 1200:
+        pixel_size = 14
+    else:
+        pixel_size = 17
+
+    img = img.pixelize(pixel_size, levels=8)
+    img.save(image_path)
+    return
+
 transformations_dict = {'edges': get_edges, 'divide': divide,
-                        'invert': invert, 'dilate': dilate }
+                        'invert': invert, 'dilate': dilate,
+                        '8bit': eight_bit }
 
 def fix_rotation(image_path, rotation):
     img = Image(image_path)
@@ -59,7 +77,7 @@ class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
         tmp_name = tmp_file.name.split("/")[-1]
-        output_file = open("files/uploads/original/" + tmp_name, 'w') #TODO: close?
+        output_file = open("files/uploads/original/" + tmp_name, 'w')
 
         image = self.request.files['data'][0]
         output_file.write(image['body'])

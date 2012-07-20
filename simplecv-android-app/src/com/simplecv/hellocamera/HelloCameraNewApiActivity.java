@@ -77,7 +77,7 @@ public class HelloCameraNewApiActivity extends Activity {
 	/* Possible transformations on spinner */
 	private static final int INVERT = 0;
 	private static final int GRAB_EDGES = 1;
-	private static final int DIVIDE = 2;
+	private static final int EIGHT_BIT = 2;
 	private static final int DILATE = 3;
 
 
@@ -341,8 +341,8 @@ public class HelloCameraNewApiActivity extends Activity {
 	    		case GRAB_EDGES:
 	    			transformation = "edges";
 	    		break;
-	    		case DIVIDE:
-	    			transformation = "divide";
+	    		case EIGHT_BIT:
+	    			transformation = "8bit";
 	    		break;
 	    		case DILATE:
 	    			transformation = "dilate";

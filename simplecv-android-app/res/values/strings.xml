@@ -15,7 +15,7 @@
     <string-array name="transformations_array">
         <item>Invert</item>
         <item>Grab Edges</item>
-        <item>Divide</item>
+        <item>8-bit</item>
 		<item>Dilate</item>
     </string-array>
 
