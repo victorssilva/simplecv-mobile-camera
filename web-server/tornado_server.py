@@ -6,6 +6,9 @@ from SimpleCV import *
 
 define("port", default=8000, help="run on the given port", type=int)
 
+dir_modified = "files/uploads/modified/"
+dir_original = "files/uploads/original/"
+
 def get_edges(image_path):
     img = Image(image_path)
     img = img.edges()
@@ -61,10 +64,15 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [ (r"/", HomeHandler), (r"/upload", UploadHandler),
                      (r"/uploads/modified/(.*)", tornado.web.StaticFileHandler,
-                        {"path": os.path.join(os.path.dirname(__file__), "files/uploads/modified")}),
+                        {"path": os.path.join(os.path.dirname(__file__), dir_modified)}),
                      (r"/process", ProcessHandler) ]
 
         print 'SimpleCV Mobile App - Listening...\n'
+
+        if not os.path.exists(dir_original):
+            os.makedirs(dir_original)
+        if not os.path.exists(dir_modified):
+            os.makedirs(dir_modified)
 
         tornado.web.Application.__init__(self, handlers)
 
@@ -79,15 +87,16 @@ class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
         tmp_name = tmp_file.name.split("/")[-1]
-        output_file = open("files/uploads/original/" + tmp_name, 'w')
+        output_file = open(dir_original + tmp_name, 'w')
 
         image = self.request.files['data'][0]
         output_file.write(image['body'])
-        image_path = "%s/files/uploads/original/%s" % (os.getcwd(), tmp_name)
+
+        image_path = os.getcwd() + dir_original + tmp_name
 
 
-        #img_URL = "http://10.0.2.2:8000/uploads/original/%s" % tmp_name
-        img_URL = "http://mobiletest.simplecv.org:8000/uploads/original/%s" % tmp_name
+        img_URL = "http://10.0.2.2:8000/uploads/original/%s" % tmp_name
+        #img_URL = "http://mobiletest.simplecv.org:8000/uploads/original/%s" % tmp_name
 
         print image_path
 
@@ -101,8 +110,8 @@ class ProcessHandler(tornado.web.RequestHandler):
         rotation = int(self.request.arguments['rotation'][0])
 
         file_name = given_path.split('/')[-1]
-        original_path = "files/uploads/original/" + file_name
-        modified_path = "files/uploads/modified/" + file_name
+        original_path = dir_original + file_name
+        modified_path = dir_modified + file_name
 
         shutil.copyfile(original_path, modified_path);
 
@@ -110,10 +119,9 @@ class ProcessHandler(tornado.web.RequestHandler):
         processing_function = transformations_dict[transformation_name]
         processing_function(modified_path)
 
-        #img_URL = "http://10.0.2.2:8000/uploads/modified/%s" % file_name
-        img_URL = "http://mobiletest.simplecv.org:8000/uploads/modified/%s" % file_name
+        img_URL = "http://10.0.2.2:8000/uploads/modified/%s" % file_name
+        #img_URL = "http://mobiletest.simplecv.org:8000/uploads/modified/%s" % file_name
 
-        print modified_path
         print img_URL
 
         self.finish(img_URL)
