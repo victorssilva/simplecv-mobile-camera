@@ -64,6 +64,8 @@ class Application(tornado.web.Application):
                         {"path": os.path.join(os.path.dirname(__file__), "files/uploads/modified")}),
                      (r"/process", ProcessHandler) ]
 
+        print 'SimpleCV Mobile App - Listening...\n'
+
         tornado.web.Application.__init__(self, handlers)
 
 class HomeHandler(tornado.web.RequestHandler):
