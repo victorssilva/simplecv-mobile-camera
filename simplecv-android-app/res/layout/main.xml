@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:orientation="vertical" >
 
     <TextView
@@ -70,28 +71,29 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:baselineAligned="true" >
 
         <Button
-            android:id="@+id/clockwise_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/counterclockwise_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:onClick="rotateCw"
+            android:background="@drawable/rotate_left"
             android:clickable="false"
-            android:text="@string/clockwise_button" />
+            android:onClick="rotateCcw" />
 
         <Button
-            android:id="@+id/counterclockwise_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:id="@+id/clockwise_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:onClick="rotateCcw"
+            android:background="@drawable/rotate_right"
             android:clickable="false"
-            android:text="@string/counterclockwise_button" />
+            android:onClick="rotateCw"/>
+
     </LinearLayout>
 
     <ImageView
