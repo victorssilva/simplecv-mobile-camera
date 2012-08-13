@@ -31,6 +31,29 @@ def tv(image_path):
     on_tv.save(image_path)
     return
 
+def wanted(image_path, rotation):
+
+    if (rotation/90) % 2 == 0:
+        width = 400
+        height = 300
+        pos = (171, 380)
+    else:
+        width = 300
+        height = 400
+        pos = (211, 330)
+
+    face = Image(image_path).edges().binarize().erode().smooth().scale(width,height)
+    (r, g, b) = face.splitChannels()
+    r = r*2.3
+    brown = face.mergeChannels(r, g, b)
+
+    background = Image('files/wanted.jpg')
+
+    mask = brown.invert()
+    wanted = background.blit(brown, pos, alphaMask=mask)
+    wanted.save(image_path)
+    return
+
 def eight_bit(image_path):
     img = Image(image_path)
     bigger = img.width if img.width > img.height else img.height
@@ -48,7 +71,7 @@ def eight_bit(image_path):
     img.save(image_path)
     return
 
-transformations_dict = {'edges': get_edges,
+transformations_dict = {'edges': get_edges, 'wanted' : wanted,
                         'invert': invert, 'tv': tv,
                         '8bit': eight_bit }
 
@@ -116,7 +139,11 @@ class ProcessHandler(tornado.web.RequestHandler):
 
         fix_rotation(modified_path, rotation)
         processing_function = transformations_dict[transformation_name]
-        processing_function(modified_path)
+
+        if transformation_name == 'wanted':
+            processing_function(modified_path, rotation)
+        else:
+            processing_function(modified_path)
 
         img_URL = "http://10.0.2.2:8000/uploads/modified/%s" % file_name
         #img_URL = "http://mobiletest.simplecv.org:8000/uploads/modified/%s" % file_name

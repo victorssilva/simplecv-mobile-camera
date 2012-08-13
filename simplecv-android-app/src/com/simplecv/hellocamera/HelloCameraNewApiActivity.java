@@ -79,7 +79,8 @@ public class HelloCameraNewApiActivity extends Activity {
 	private static final int GRAB_EDGES = 1;
 	private static final int EIGHT_BIT = 2;
 	private static final int TV = 3;
-
+	private static final int WANTED = 4;
+	
 
     /** Called when the activity is first created. */
     @Override
@@ -346,6 +347,9 @@ public class HelloCameraNewApiActivity extends Activity {
 	    		break;
 	    		case TV:
 	    			transformation = "tv";
+	    		break;
+	    		case WANTED:
+	    			transformation = "wanted";
 	    		break;
 	    	}
 	    }
