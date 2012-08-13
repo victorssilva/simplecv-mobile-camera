@@ -10,27 +10,25 @@ dir_modified = "files/uploads/modified/"
 dir_original = "files/uploads/original/"
 
 def get_edges(image_path):
-    img = Image(image_path)
-    img = img.edges()
-    img.save(image_path)
-    return
-
-def divide(image_path):
-    img = Image(image_path)
-    img = img / 10
+    img = Image(image_path).edges()
     img.save(image_path)
     return
 
 def invert(image_path):
-    img = Image(image_path)
-    img = img.invert()
+    img = Image(image_path).invert()
     img.save(image_path)
     return
 
-def dilate(image_path):
-    img = Image(image_path)
-    img = img.dilate(5)
-    img.save(image_path)
+def tv(image_path):
+    tv_original = Image("family_watching_television_1958.jpg", sample=True)
+    tv_coordinates = [(353, 379), (433,380),(432, 448), (354,446)]
+    tv_mask = Image(tv_original.size()).invert().warp(tv_coordinates)
+    tv = tv_original - tv_mask
+
+    bwimage = Image(image_path).grayscale().resize(tv.width, tv.height)
+    on_tv = tv + bwimage.warp(tv_coordinates)
+
+    on_tv.save(image_path)
     return
 
 def eight_bit(image_path):
@@ -50,9 +48,10 @@ def eight_bit(image_path):
     img.save(image_path)
     return
 
-transformations_dict = {'edges': get_edges, 'divide': divide,
-                        'invert': invert, 'dilate': dilate,
+transformations_dict = {'edges': get_edges,
+                        'invert': invert, 'tv': tv,
                         '8bit': eight_bit }
+
 
 def fix_rotation(image_path, rotation):
     img = Image(image_path)

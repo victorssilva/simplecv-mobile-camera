@@ -78,7 +78,7 @@ public class HelloCameraNewApiActivity extends Activity {
 	private static final int INVERT = 0;
 	private static final int GRAB_EDGES = 1;
 	private static final int EIGHT_BIT = 2;
-	private static final int DILATE = 3;
+	private static final int TV = 3;
 
 
     /** Called when the activity is first created. */
@@ -344,8 +344,8 @@ public class HelloCameraNewApiActivity extends Activity {
 	    		case EIGHT_BIT:
 	    			transformation = "8bit";
 	    		break;
-	    		case DILATE:
-	    			transformation = "dilate";
+	    		case TV:
+	    			transformation = "tv";
 	    		break;
 	    	}
 	    }
