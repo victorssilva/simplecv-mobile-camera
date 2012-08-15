@@ -101,7 +101,7 @@ public class HelloCameraNewApiActivity extends Activity {
     }
 
     public File getNewPictureFile(){
-		File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SimpleCV"); //WHERETO? Context.DIRECTORY_PICTURES?
+		File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SimpleCV");
 		if (!mediaStorageDir.exists()){
 			if (!mediaStorageDir.mkdirs()){
 				Log.i("SimpleCV", "Failed to create directory");

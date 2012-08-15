@@ -30,6 +30,13 @@ public class DisplayResultsActivity extends Activity {
         modifiedImage = (ImageView) findViewById(R.id.modifiedimage);
 		new displayImageTask().execute(modifiedImageUri);
     }
+    
+	public void clickImage(View view){
+		Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
+		viewImageIntent.setDataAndType(modifiedImageUri,"image/*");
+		startActivity(viewImageIntent);
+	}
+    
    
     public void deletePicture(View view){
     	File picture = new File(modifiedImageUri.getPath());
@@ -60,8 +67,8 @@ public class DisplayResultsActivity extends Activity {
 			        fis.close();
 			
 			        int scale = 1;
-			        if (o.outHeight > 350 || o.outWidth > 350) { //Max size = ?
-			            scale = (int)Math.pow(2, (int) Math.round(Math.log(300 / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+			        if (o.outHeight > 350 || o.outWidth > 350) {
+			            scale = (int)Math.pow(2, (int) Math.round(Math.log(350 / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
 			        }
 			
 			        BitmapFactory.Options o2 = new BitmapFactory.Options();
