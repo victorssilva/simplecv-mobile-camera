@@ -34,17 +34,17 @@ def tv(image_path):
 def wanted(image_path, rotation):
 
     if (rotation/90) % 2 == 0:
-        width = 400
-        height = 300
-        pos = (171, 380)
+        width = 240
+        height = 180
+        pos = (90, 245)
     else:
-        width = 300
-        height = 400
-        pos = (211, 330)
+        width = 180
+        height = 240
+        pos = (100, 240)
 
     face = Image(image_path).edges().binarize().erode().smooth().scale(width,height)
     (r, g, b) = face.splitChannels()
-    r = r*2.3
+    r = r*1.25
     brown = face.mergeChannels(r, g, b)
 
     background = Image('files/wanted.jpg')
